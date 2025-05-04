@@ -8,7 +8,7 @@ load_dotenv()
 import googlemaps # type: ignore
 
 API_KEY = os.getenv("GOOGLE_API_KEY")
-gmaps = googlemaps.Client(key=os.getenv("GOOGLE_API_KEY"))
+gmaps = googlemaps.Client(key=API_KEY)
 
 app = Flask(__name__)
 
@@ -52,21 +52,23 @@ for index, place in enumerate(places["results"]):
 # print(len(places['results']))
 
 
-place = gmaps.place(
+my_place = gmaps.place(
     place_id=os.getenv("PLACE_ID"),
     fields=["name", "vicinity", "rating", "formatted_phone_number", "review"],
 )
 
-print(place["result"]["name"])
-print(place["result"]["vicinity"])
-print(place["result"]["rating"])
-print(place["result"]["formatted_phone_number"])
+print(my_place["result"]["name"])
+print(my_place["result"]["vicinity"])
+print(my_place["result"]["rating"])
+print(my_place["result"]["formatted_phone_number"])
 # print(place["result"]["reviews"])
 
 
 @app.route("/places", methods=["GET"])
 def get_places():
-    return jsonify(place['result']['reviews'])
+    reviews = my_place['result'].get('reviews', [])
+    review_texts = [review['text'] for review in reviews if 'text' in review]
+    return jsonify(review_texts)
 
 
 @app.route("/")
