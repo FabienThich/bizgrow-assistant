@@ -73,7 +73,7 @@ def get_places():
 
 @app.route("/")
 def home():
-    return "Hello world bro!"
+    return '<a href="/places">Go to Places</a>'
 
 
 if __name__ == '__main__':
